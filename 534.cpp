@@ -39,12 +39,45 @@ using namespace std;
 long double dist[MX_N];
 pair<long double, long double> coord[MX_N];
 long double mass[MX_N][MX_N];
-bool processed[MX_N];
 int N;
 
 long double sdist(int a, int b){
     return sqrt((coord[a].fi - coord[b].fi)*(coord[a].fi - coord[b].fi) + (coord[a].se - coord[b].se)*(coord[a].se - coord[b].se));
 }
+
+//BellManFord Variables
+int edge[MX_N*MX_N][2]; // u, v
+vector<int> EdgeID; // id
+
+void BellManFord(){
+    for(int i=0;i<N;++i){
+        dist[i] = INF;
+        cin >> coord[i].fi >> coord[i].se;
+    }
+    int E = 0;
+
+    for(int i=0;i<N;++i){
+        for(int j=0;j<N;++j){
+            edge[E][0] = i;
+            edge[E][1] = j;
+            mass[i][j] = sdist(i, j);
+            ++E;
+        }
+    }
+    dist[0] = 0.0;
+    for(int i=0;i<N-1;++i){
+        for(int j=0;j<E;++j){
+            int u = edge[j][0];
+            int v = edge[j][1];
+            if(dist[v] > max(dist[u], mass[u][v])){
+                dist[v] = max(dist[u], mass[u][v]);
+            }
+        }
+    }
+}
+
+//Dijkstra Variables
+bool processed[MX_N];
 
 void Dijkstra(){
     for(int i=0;i<N;++i){
